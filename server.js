@@ -9,33 +9,48 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // 中間件設定
-app.use(cors({
-    origin: true,
-    credentials: true
-}));
+app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json());
 
 // Session 設定 (修正 Vercel 上的 MemoryStore 警告)
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'fish-cafe-default-secret',
+    secret: process.env.SESSION_SECRET || 'fish-cafe-secure-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: true, // Vercel 強制要求 HTTPS
+        secure: true, // Vercel 環境必須為 true
         sameSite: 'none'
     }
 }));
 
-// Discord OAuth2 設定
-const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI } = process.env;
+// 從環境變數讀取設定
+const { 
+    DISCORD_CLIENT_ID, 
+    DISCORD_CLIENT_SECRET, 
+    DISCORD_REDIRECT_URI,
+    OWNER_USER_ID 
+} = process.env;
 
-// 1. 登入路由
+// --- 路由開始 ---
+
+// 首頁：解決 Cannot GET /
+app.get('/', (req, res) => {
+    res.send(`
+        <div style="font-family: sans-serif; text-align: center; padding: 50px;">
+            <h1>🐟 魚咖招待所後端系統</h1>
+            <p>狀態：系統運行中</p>
+            <a href="/auth/discord" style="padding: 10px 20px; background: #5865F2; color: white; text-decoration: none; border-radius: 5px;">使用 Discord 登入測試</a>
+        </div>
+    `);
+});
+
+// Discord 登入跳轉
 app.get('/auth/discord', (req, res) => {
     const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
     res.redirect(url);
 });
 
-// 2. 回傳處理 (Callback)
+// OAuth2 回傳處理
 app.get('/auth/discord/callback', async (req, res) => {
     const { code } = req.query;
     if (!code) return res.redirect('/?error=no_code');
@@ -56,16 +71,30 @@ app.get('/auth/discord/callback', async (req, res) => {
         req.session.user = userResponse.data;
         res.redirect('/?login=success');
     } catch (err) {
-        console.error(err.response?.data || err.message);
+        console.error('OAuth2 Error:', err.response?.data || err.message);
         res.redirect('/?error=auth_failed');
     }
 });
 
-// 3. 取得用戶資訊 API
+// 獲取當前用戶資訊
 app.get('/api/user', (req, res) => {
-    res.json(req.session.user || { error: '未登入' });
+    if (!req.session.user) return res.status(401).json({ error: '未登入' });
+    res.json({
+        ...req.session.user,
+        isOwner: req.session.user.id === OWNER_USER_ID
+    });
 });
 
-// 啟動 (Vercel 需要導出 app)
+// 登出
+app.get('/auth/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+});
+
+// 導出給 Vercel 使用
 module.exports = app;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+
+// 本地測試用
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+}

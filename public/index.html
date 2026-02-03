@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord 加成成員福利中心</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fab fa-discord"></i> 魚咖福利中心</h1>
+                <p>專為 Discord Nitro 加成成員打造的福利選擇平台</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- 用戶登入區域 -->
+            <section class="login-section" id="loginSection">
+                <div class="login-card">
+                    <h2>🚀 開始使用</h2>
+                    <p>選擇登入方式來開始使用福利中心</p>
+                    
+                    <!-- Discord OAuth2 登入 -->
+                    <div class="oauth-login">
+                        <button id="discordLoginBtn" class="btn btn-discord">
+                            <i class="fab fa-discord"></i> 使用 Discord 登入
+                        </button>
+                        <p class="oauth-hint">推薦使用，自動獲取您的伺服器和身份信息</p>
+                    </div>
+                    
+                    <div class="login-divider">
+                        <span>或</span>
+                    </div>
+                    
+                    <!-- 手動輸入登入 -->
+                    <div class="manual-login">
+                        <button id="manualLoginToggle" class="btn btn-secondary">
+                            <i class="fas fa-keyboard"></i> 手動輸入 ID
+                        </button>
+                        
+                        <form id="loginForm" style="display: none; margin-top: 20px;">
+                            <div class="input-group">
+                                <label for="userId">Discord 用戶 ID</label>
+                                <input type="text" id="userId" placeholder="例如: 123456789012345678" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="guildId">Discord 伺服器 ID</label>
+                                <input type="text" id="guildId" placeholder="例如: 987654321098765432" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> 登入
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 用戶資訊區域 -->
+            <section class="user-section" id="userSection" style="display: none;">
+                <div class="user-card">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h3 id="userName">載入中...</h3>
+                            <p id="userStatus">檢查加成狀態...</p>
+                            <button id="logoutBtn" class="btn btn-secondary btn-small" style="margin-top: 10px;">
+                                <i class="fas fa-sign-out-alt"></i> 登出
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 藝術牆區域 -->
+            <section class="artwork-section" id="artworkSection">
+                <h2>🎨 藝術牆</h2>
+                <p class="artwork-subtitle">展示我們社群的精彩瞬間</p>
+                
+                <!-- 站主上傳區域 -->
+                <div class="artwork-upload" id="artworkUpload" style="display: none;">
+                    <div class="upload-card">
+                        <h3>📸 上傳新作品</h3>
+                        <form id="artworkForm" enctype="multipart/form-data">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p>拖拽文件到此處或點擊選擇</p>
+                                <p class="upload-hint">支持 JPG, PNG, GIF, WebP (最大 10MB)</p>
+                                <input type="file" id="artworkFile" accept="image/*" style="display: none;">
+                            </div>
+                            
+                            <div class="artwork-details">
+                                <div class="input-group">
+                                    <label for="artworkTitle">作品標題</label>
+                                    <input type="text" id="artworkTitle" placeholder="為這個作品取個名字..." maxlength="100">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="artworkDescription">作品描述</label>
+                                    <textarea id="artworkDescription" placeholder="描述一下這個作品..." rows="3" maxlength="500"></textarea>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="featuredUser">特色用戶 (可選)</label>
+                                    <input type="text" id="featuredUser" placeholder="輸入加成成員的用戶名稱...">
+                                    <small>可以標註這個作品相關的加成成員</small>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" disabled>
+                                <i class="fas fa-upload"></i> 上傳作品
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 藝術牆展示區域 -->
+                <div class="artwork-gallery" id="artworkGallery">
+                    <div class="gallery-grid" id="galleryGrid">
+                        <!-- 作品將由 JavaScript 動態生成 -->
+                    </div>
+                    
+                    <div class="empty-gallery" id="emptyGallery">
+                        <div class="empty-icon">🎨</div>
+                        <h3>藝術牆還是空的</h3>
+                        <p>等待站主上傳第一個作品...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 福利選擇區域 -->
+            <section class="benefits-section" id="benefitsSection" style="display: none;">
+                <h2>🎁 可用福利</h2>
+                <div class="benefits-grid" id="benefitsGrid">
+                    <!-- 福利卡片將由 JavaScript 動態生成 -->
+                </div>
+            </section>
+
+            <!-- 身份組顏色選擇區域 -->
+            <section class="role-section" id="roleSection" style="display: none;">
+                <h2>🎨 身份組顏色自選</h2>
+                <div class="role-card">
+                    <div class="role-creator">
+                        <h3>創建自定義身份組</h3>
+                        <form id="roleForm">
+                            <div class="input-group">
+                                <label for="roleName">身份組名稱</label>
+                                <input type="text" id="roleName" placeholder="輸入身份組名稱" maxlength="32" required>
+                            </div>
+                            <div class="color-picker-group">
+                                <label for="roleColor">選擇顏色</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="roleColor" value="#5865F2">
+                                    <input type="text" id="colorHex" value="#5865F2" placeholder="#FFFFFF">
+                                </div>
+                            </div>
+                            <div class="color-presets">
+                                <span>快速選擇：</span>
+                                <div class="preset-colors">
+                                    <button type="button" class="color-preset" data-color="#5865F2" style="background: #5865F2;"></button>
+                                    <button type="button" class="color-preset" data-color="#57F287" style="background: #57F287;"></button>
+                                    <button type="button" class="color-preset" data-color="#FEE75C" style="background: #FEE75C;"></button>
+                                    <button type="button" class="color-preset" data-color="#EB459E" style="background: #EB459E;"></button>
+                                    <button type="button" class="color-preset" data-color="#ED4245" style="background: #ED4245;"></button>
+                                    <button type="button" class="color-preset" data-color="#FF6B35" style="background: #FF6B35;"></button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> 創建身份組
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 現有身份組管理 -->
+                <div class="existing-roles" id="existingRoles">
+                    <h3>您的身份組</h3>
+                    <div class="roles-list" id="rolesList">
+                        <!-- 身份組列表將由 JavaScript 動態生成 -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 圖片預覽模態框 -->
+        <div class="modal" id="imageModal">
+            <div class="modal-content">
+                <span class="modal-close" id="modalClose">&times;</span>
+                <img id="modalImage" src="" alt="">
+                <div class="modal-info">
+                    <h3 id="modalTitle"></h3>
+                    <p id="modalDescription"></p>
+                    <div class="modal-meta">
+                        <span id="modalUser"></span>
+                        <span id="modalDate"></span>
+                    </div>
+                    <div class="modal-actions" id="modalActions" style="display: none;">
+                        <button class="btn btn-secondary btn-small" onclick="editArtwork()">
+                            <i class="fas fa-edit"></i> 編輯
+                        </button>
+                        <button class="btn btn-danger btn-small" onclick="deleteArtwork()">
+                            <i class="fas fa-trash"></i> 刪除
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 載入動畫 -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>處理中...</p>
+        </div>
+
+        <!-- 通知系統 -->
+        <div class="notification" id="notification">
+            <span id="notificationText"></span>
+            <button id="closeNotification">&times;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

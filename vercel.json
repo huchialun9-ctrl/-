@@ -15,13 +15,5 @@
       "src": "/(.*)",
       "dest": "/server.js"
     }
-  ],
-  "env": {
-    "DISCORD_BOT_TOKEN": "@discord_bot_token",
-    "DISCORD_CLIENT_ID": "@discord_client_id",
-    "DISCORD_CLIENT_SECRET": "@discord_client_secret",
-    "DISCORD_GUILD_ID": "@discord_guild_id",
-    "OWNER_USER_ID": "@owner_user_id",
-    "SESSION_SECRET": "@session_secret"
-  }
+  ]
 }

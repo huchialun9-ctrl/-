@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord 加成成員福利中心</title>
+    <title>魚咖身份組自定義中心</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -11,8 +11,8 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                <h1><i class="fab fa-discord"></i> 魚咖福利中心</h1>
-                <p>專為 Discord Nitro 加成成員打造的福利選擇平台</p>
+                <h1><i class="fab fa-discord"></i> 魚咖身份組自定義中心</h1>
+                <p>為所有Discord用戶打造的身份組顏色自定義平台</p>
             </div>
         </header>
 
@@ -21,7 +21,7 @@
             <section class="login-section" id="loginSection">
                 <div class="login-card">
                     <h2>🚀 開始使用</h2>
-                    <p>選擇登入方式來開始使用福利中心</p>
+                    <p>選擇登入方式來開始使用身份組自定義功能</p>
                     
                     <!-- Discord OAuth2 登入 -->
                     <div class="oauth-login">
@@ -58,7 +58,195 @@
                 </div>
             </section>
 
-            <!-- 用戶資訊區域 -->
+            <!-- 用戶儀表板區域 -->
+            <section class="dashboard-section" id="dashboardSection" style="display: none;">
+                <!-- 用戶資訊卡片 -->
+                <div class="user-dashboard">
+                    <div class="user-card">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="user-details">
+                                <h3 id="userName">載入中...</h3>
+                                <p id="userStatus">🎨 歡迎使用身份組自定義功能！</p>
+                                <div class="user-actions">
+                                    <button id="logoutBtn" class="btn btn-secondary btn-small">
+                                        <i class="fas fa-sign-out-alt"></i> 登出
+                                    </button>
+                                    <button id="refreshBtn" class="btn btn-primary btn-small">
+                                        <i class="fas fa-sync-alt"></i> 重新整理
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快速統計 -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="roleCount">0</h4>
+                                <p>我的身份組</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="guildName">載入中...</h4>
+                                <p>當前伺服器</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="userType">一般用戶</h4>
+                                <p>用戶類型</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-images"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="artworkCount">0</h4>
+                                <p>藝術作品</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快速操作面板 -->
+                    <div class="quick-actions">
+                        <h3>🚀 快速操作</h3>
+                        <div class="action-grid">
+                            <button class="action-btn" onclick="showCreateRoleModal()">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>創建身份組</span>
+                            </button>
+                            <button class="action-btn" onclick="showColorPicker()">
+                                <i class="fas fa-palette"></i>
+                                <span>修改顏色</span>
+                            </button>
+                            <button class="action-btn" onclick="showRoleManager()">
+                                <i class="fas fa-cogs"></i>
+                                <span>管理身份組</span>
+                            </button>
+                            <button class="action-btn" onclick="showArtworkGallery()">
+                                <i class="fas fa-images"></i>
+                                <span>藝術牆</span>
+                            </button>
+                            <button class="action-btn" onclick="showSettings()">
+                                <i class="fas fa-sliders-h"></i>
+                                <span>設定</span>
+                            </button>
+                            <button class="action-btn" onclick="showHelp()">
+                                <i class="fas fa-question-circle"></i>
+                                <span>幫助</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 身份組創建模態框 -->
+            <div class="modal" id="createRoleModal">
+                <div class="modal-content role-modal">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-plus-circle"></i> 創建新身份組</h3>
+                        <span class="modal-close" onclick="closeCreateRoleModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="quickRoleForm">
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="quickRoleName">身份組名稱</label>
+                                    <input type="text" id="quickRoleName" placeholder="輸入身份組名稱" maxlength="32" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="color-section">
+                                    <label>選擇顏色</label>
+                                    <div class="color-picker-advanced">
+                                        <input type="color" id="quickRoleColor" value="#5865F2">
+                                        <input type="text" id="quickColorHex" value="#5865F2" placeholder="#FFFFFF">
+                                        <button type="button" class="btn btn-secondary btn-small" onclick="randomColor()">
+                                            <i class="fas fa-random"></i> 隨機
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="color-presets-advanced">
+                                <label>熱門顏色</label>
+                                <div class="preset-colors-grid">
+                                    <button type="button" class="color-preset-large" data-color="#5865F2" style="background: #5865F2;" title="Discord 藍"></button>
+                                    <button type="button" class="color-preset-large" data-color="#57F287" style="background: #57F287;" title="綠色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#FEE75C" style="background: #FEE75C;" title="黃色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#EB459E" style="background: #EB459E;" title="粉色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#ED4245" style="background: #ED4245;" title="紅色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#FF6B35" style="background: #FF6B35;" title="橙色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#9C59B6" style="background: #9C59B6;" title="紫色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#3498DB" style="background: #3498DB;" title="藍色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#E91E63" style="background: #E91E63;" title="深粉"></button>
+                                    <button type="button" class="color-preset-large" data-color="#00BCD4" style="background: #00BCD4;" title="青色"></button>
+                                    <button type="button" class="color-preset-large" data-color="#FF9800" style="background: #FF9800;" title="琥珀"></button>
+                                    <button type="button" class="color-preset-large" data-color="#795548" style="background: #795548;" title="棕色"></button>
+                                </div>
+                            </div>
+
+                            <div class="color-preview">
+                                <div class="preview-role" id="rolePreview">
+                                    <div class="preview-dot" id="previewDot"></div>
+                                    <span id="previewName">預覽身份組</span>
+                                </div>
+                            </div>
+
+                            <div class="modal-actions">
+                                <button type="button" class="btn btn-secondary" onclick="closeCreateRoleModal()">取消</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> 創建身份組
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 身份組管理面板 -->
+            <div class="modal" id="roleManagerModal">
+                <div class="modal-content manager-modal">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-cogs"></i> 身份組管理</h3>
+                        <span class="modal-close" onclick="closeRoleManager()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="role-manager">
+                            <div class="manager-header">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="roleSearch" placeholder="搜尋身份組...">
+                                </div>
+                                <button class="btn btn-primary btn-small" onclick="refreshRoles()">
+                                    <i class="fas fa-sync-alt"></i> 重新整理
+                                </button>
+                            </div>
+                            <div class="roles-manager-list" id="rolesManagerList">
+                                <!-- 身份組列表將由 JavaScript 動態生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用戶資訊區域 (保留原有的，但隱藏) -->
             <section class="user-section" id="userSection" style="display: none;">
                 <div class="user-card">
                     <div class="user-info">
@@ -136,9 +324,9 @@
 
             <!-- 福利選擇區域 -->
             <section class="benefits-section" id="benefitsSection" style="display: none;">
-                <h2>🎁 可用福利</h2>
+                <h2>🎨 可用功能</h2>
                 <div class="benefits-grid" id="benefitsGrid">
-                    <!-- 福利卡片將由 JavaScript 動態生成 -->
+                    <!-- 功能卡片將由 JavaScript 動態生成 -->
                 </div>
             </section>
 

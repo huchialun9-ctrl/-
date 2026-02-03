@@ -20,33 +20,38 @@ document.addEventListener('DOMContentLoaded', function() {
     loadBenefits();
     loadArtwork();
     showArtworkSection();
-    checkLoginStatus();
+    checkLoginStatus(); // 恢復自動檢查狀態
 });
 
 // 設定事件監聽器
 function setupEventListeners() {
     // Discord OAuth2 登入按鈕
-    document.getElementById('discordLoginBtn').addEventListener('click', handleDiscordLogin);
+    const discordBtn = document.getElementById('discordLoginBtn');
+    if (discordBtn) discordBtn.addEventListener('click', handleDiscordLogin);
     
     // 手動登入切換
-    document.getElementById('manualLoginToggle').addEventListener('click', toggleManualLogin);
+    const manualToggle = document.getElementById('manualLoginToggle');
+    if (manualToggle) manualToggle.addEventListener('click', toggleManualLogin);
     
     // 登入表單
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
     
     // 登出按鈕
-    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     
     // 身份組表單
-    document.getElementById('roleForm').addEventListener('submit', handleCreateRole);
+    const roleForm = document.getElementById('roleForm');
+    if (roleForm) roleForm.addEventListener('submit', handleCreateRole);
     
     // 藝術牆表單
-    document.getElementById('artworkForm').addEventListener('submit', handleArtworkUpload);
+    const artworkForm = document.getElementById('artworkForm');
+    if (artworkForm) artworkForm.addEventListener('submit', handleArtworkUpload);
     
     // 文件上傳區域
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('artworkFile');
-    
     if (uploadArea && fileInput) {
         uploadArea.addEventListener('click', () => fileInput.click());
         uploadArea.addEventListener('dragover', handleDragOver);
@@ -55,33 +60,25 @@ function setupEventListeners() {
         fileInput.addEventListener('change', handleFileSelect);
     }
     
-    // 模態框
-    const modal = document.getElementById('imageModal');
+    // 模態框關閉
     const modalClose = document.getElementById('modalClose');
-    
+    const modal = document.getElementById('imageModal');
     if (modalClose) modalClose.addEventListener('click', closeModal);
     if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) closeModal();
-        });
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     }
     
     // 顏色選擇器同步
     const colorPicker = document.getElementById('roleColor');
     const colorHex = document.getElementById('colorHex');
-    
     if (colorPicker && colorHex) {
-        colorPicker.addEventListener('input', function() {
-            colorHex.value = this.value.toUpperCase();
-        });
+        colorPicker.addEventListener('input', function() { colorHex.value = this.value.toUpperCase(); });
         colorHex.addEventListener('input', function() {
-            if (isValidHexColor(this.value)) {
-                colorPicker.value = this.value;
-            }
+            if (isValidHexColor(this.value)) { colorPicker.value = this.value; }
         });
     }
     
-    // 預設顏色按鈕
+    // 預設顏色
     document.querySelectorAll('.color-preset').forEach(button => {
         button.addEventListener('click', function() {
             const color = this.dataset.color;
@@ -89,8 +86,7 @@ function setupEventListeners() {
             if (colorHex) colorHex.value = color;
         });
     });
-    
-    // 通知關閉按鈕
+
     const closeNotif = document.getElementById('closeNotification');
     if (closeNotif) closeNotif.addEventListener('click', hideNotification);
 }
@@ -98,14 +94,8 @@ function setupEventListeners() {
 // 檢查登入狀態
 async function checkLoginStatus() {
     const urlParams = new URLSearchParams(window.location.search);
-    const loginStatus = urlParams.get('login');
-    const error = urlParams.get('error');
-    
-    if (loginStatus === 'success') {
-        showNotification('🎉 Discord 登入成功！', 'success');
-        window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (error) {
-        showNotification('登入失敗: ' + error, 'error');
+    if (urlParams.get('login') === 'success') {
+        showNotification('🎉 登入成功！', 'success');
         window.history.replaceState({}, document.title, window.location.pathname);
     }
     
@@ -116,90 +106,104 @@ async function checkLoginStatus() {
             handleOAuthLogin(userData);
         }
     } catch (error) {
-        console.log('用戶未登入');
+        console.log('尚未登入');
     }
 }
 
-// Discord OAuth2 登入
 function handleDiscordLogin() {
     window.location.href = '/auth/discord';
 }
 
-// 處理OAuth登入成功
 async function handleOAuthLogin(userData) {
     currentUser = userData;
     isOwner = userData.isOwner || false;
-    
     displayUserInfo(currentUser);
     
     if (isOwner) {
-        document.getElementById('artworkUpload').style.display = 'block';
+        const uploadBox = document.getElementById('artworkUpload');
+        if (uploadBox) uploadBox.style.display = 'block';
     }
 
-    // 這裡可以根據 userData 判斷加成狀態，目前先預設顯示
+    // 開放所有功能
     showBenefitsSection();
     showRoleSection();
     loadUserRoles();
 }
 
-// 顯示用戶資訊
 function displayUserInfo(user) {
-    if (userNameDisplay) userNameDisplay.textContent = user.username;
-    loginSection.style.display = 'none';
-    userSection.style.display = 'block';
+    const nameTag = document.getElementById('userName');
+    const statusTag = document.getElementById('userStatus');
+    if (nameTag) nameTag.textContent = user.username;
+    if (statusTag) statusTag.textContent = '🎨 歡迎使用自定義功能！';
+    
+    const userAvatar = document.querySelector('.user-avatar');
+    if (userAvatar && user.id && user.avatar) {
+        userAvatar.innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128" style="width: 100%; border-radius: 50%;">`;
+    }
+    
+    if (loginSection) loginSection.style.display = 'none';
+    if (userSection) userSection.style.display = 'block';
 }
 
-// 載入福利列表 (範例資料)
+// 藝術牆與福利 (範例模擬)
 async function loadBenefits() {
     availableBenefits = [
-        { id: 'custom_role', name: '自定義身份組', icon: '🎨', description: '獲得獨一無二的顏色與名稱' },
-        { id: 'art_wall', name: '藝術牆權限', icon: '🖼️', description: '在伺服器首頁展示您的創作' }
+        { id: 'custom_role', name: '自定義身份組', icon: '🎨', description: '自選名稱與顏色' },
+        { id: 'art_wall', name: '藝術牆', icon: '🖼️', description: '展示您的作品' }
     ];
 }
 
-// 顯示福利區域
 function showBenefitsSection() {
-    const benefitsGrid = document.getElementById('benefitsGrid');
-    if (!benefitsGrid) return;
-    benefitsGrid.innerHTML = '';
-    
-    availableBenefits.forEach(benefit => {
+    const grid = document.getElementById('benefitsGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    availableBenefits.forEach(b => {
         const card = document.createElement('div');
         card.className = 'benefit-card';
-        card.innerHTML = `<h4>${benefit.icon} ${benefit.name}</h4><p>${benefit.description}</p>`;
-        benefitsGrid.appendChild(card);
+        card.innerHTML = `<h3>${b.icon} ${b.name}</h3><p>${b.description}</p>`;
+        grid.appendChild(card);
     });
-    benefitsSection.style.display = 'block';
+    if (benefitsSection) benefitsSection.style.display = 'block';
 }
 
-function showRoleSection() { roleSection.style.display = 'block'; }
-function showArtworkSection() { artworkSection.style.display = 'block'; }
+function showRoleSection() { if (roleSection) roleSection.style.display = 'block'; }
+function showArtworkSection() { if (artworkSection) artworkSection.style.display = 'block'; }
 
-// 登出
 async function handleLogout() {
     window.location.href = '/auth/logout';
 }
 
-// 通用工具
+// 通用工具函數
 function showLoading(show) { if (loading) loading.style.display = show ? 'flex' : 'none'; }
 function showNotification(msg, type) {
-    const text = document.getElementById('notificationText');
-    if (text) text.textContent = msg;
-    notification.className = `notification ${type}`;
-    notification.style.display = 'flex';
-    setTimeout(hideNotification, 3000);
+    const txt = document.getElementById('notificationText');
+    if (txt) txt.textContent = msg;
+    if (notification) {
+        notification.className = `notification ${type}`;
+        notification.style.display = 'flex';
+        setTimeout(hideNotification, 3000);
+    }
 }
-function hideNotification() { notification.style.display = 'none'; }
+function hideNotification() { if (notification) notification.style.display = 'none'; }
 function isValidHexColor(hex) { return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex); }
+
 function toggleManualLogin() {
     const form = document.getElementById('loginForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
-// 藝術牆 (此部分需配合後端資料庫，目前設為空載入)
-async function loadArtwork() {
-    const grid = document.getElementById('galleryGrid');
-    if (grid) grid.innerHTML = '<p>作品載入中...</p>';
-}
+// 藝術牆佔位函數
+async function loadArtwork() { console.log("載入藝術牆..."); }
+function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+function handleDragLeave(e) { e.preventDefault(); e.currentTarget.classList.remove('dragover'); }
+function handleDrop(e) { e.preventDefault(); }
+function handleFileSelect(e) { console.log("檔案已選擇"); }
+function handleArtworkUpload(e) { e.preventDefault(); showNotification('功能開發中', 'info'); }
+function closeModal() { if (document.getElementById('imageModal')) document.getElementById('imageModal').style.display = 'none'; }
+function loadUserRoles() { console.log("載入身份組..."); }
+function handleCreateRole(e) { e.preventDefault(); showNotification('建立功能連接中', 'info'); }
+function handleLogin(e) { e.preventDefault(); showNotification('手動登入功能維護中', 'info'); }
 
-// 其餘 handle 函數可根據實際 API 需求繼續擴充...
+window.editRoleColor = () => {};
+window.editArtwork = () => {};
+window.deleteArtwork = () => {};

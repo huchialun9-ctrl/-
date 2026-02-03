@@ -1,31 +1,13 @@
 {
-  "name": "discord-boost-benefits",
+  "name": "fish-cafe-backend",
   "version": "1.0.0",
-  "description": "Discord伺服器加成成員福利選擇網站",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "build": "echo 'Build completed'",
-    "deploy:vercel": "vercel --prod",
-    "deploy:netlify": "netlify deploy --prod",
-    "docker:build": "docker build -t discord-boost-benefits .",
-    "docker:run": "docker run -p 3000:3000 --env-file .env discord-boost-benefits"
-  },
   "dependencies": {
-    "express": "^4.18.2",
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1",
-    "cors": "^2.8.5",
+    "axios": "^1.6.0",
     "body-parser": "^1.20.2",
-    "multer": "^1.4.5-lts.1",
-    "express-session": "^1.17.3",
-    "axios": "^1.6.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
-  },
-  "keywords": ["discord", "boost", "benefits", "role", "color"],
-  "author": "Your Name",
-  "license": "MIT"
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3"
+  }
 }

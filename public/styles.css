@@ -1140,4 +1140,549 @@ body::before {
     border-top: 3px solid var(--accent-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}/* 儀表板樣
+式 */
+.dashboard-section {
+    margin-bottom: 40px;
+}
+
+.user-dashboard {
+    display: grid;
+    gap: 30px;
+}
+
+/* 用戶資訊卡片 */
+.user-dashboard .user-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px var(--shadow);
+}
+
+.user-dashboard .user-info {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.user-dashboard .user-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-primary);
+    box-shadow: 0 0 20px var(--glow);
+}
+
+.user-dashboard .user-avatar .fa-user-circle {
+    font-size: 5rem;
+    color: var(--accent-primary);
+    filter: drop-shadow(0 0 10px var(--glow));
+}
+
+.user-dashboard .user-details h3 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.user-dashboard .user-details p {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.user-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* 統計網格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px var(--shadow);
+    border-color: var(--accent-primary);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: 0 0 20px var(--glow);
+}
+
+.stat-info h4 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.stat-info p {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 快速操作面板 */
+.quick-actions {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px var(--shadow);
+}
+
+.quick-actions h3 {
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.action-btn {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(88, 101, 242, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.action-btn:hover::before {
+    left: 100%;
+}
+
+.action-btn:hover {
+    border-color: var(--accent-primary);
+    background: rgba(88, 101, 242, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px var(--shadow);
+}
+
+.action-btn i {
+    font-size: 2rem;
+    color: var(--accent-primary);
+    filter: drop-shadow(0 0 10px var(--glow));
+}
+
+.action-btn span {
+    font-size: 0.9rem;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* 身份組創建模態框 */
+.role-modal {
+    max-width: 600px;
+    width: 90%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-tertiary);
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-header h3 {
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header .modal-close {
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-header .modal-close:hover {
+    background: var(--border);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.form-row {
+    margin-bottom: 25px;
+}
+
+.color-section {
+    margin-bottom: 25px;
+}
+
+.color-section label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.color-picker-advanced {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.color-picker-advanced input[type="color"] {
+    width: 60px;
+    height: 50px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    background: none;
+}
+
+.color-picker-advanced input[type="text"] {
+    flex: 1;
+    min-width: 120px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.color-presets-advanced {
+    margin-bottom: 25px;
+}
+
+.color-presets-advanced label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.preset-colors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 15px;
+    max-width: 100%;
+}
+
+.color-preset-large {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.color-preset-large::before {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.color-preset-large:hover::before {
+    opacity: 1;
+}
+
+.color-preset-large:hover {
+    transform: scale(1.1);
+    border-color: var(--text-primary);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.color-preview {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.preview-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-weight: 600;
+}
+
+.preview-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+/* 身份組管理模態框 */
+.manager-modal {
+    max-width: 800px;
+    width: 95%;
+    max-height: 80vh;
+}
+
+.manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 20px;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 2px solid var(--border);
+    border-radius: 25px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
+}
+
+.roles-manager-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.manager-role-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.manager-role-item:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent-primary);
+    transform: translateX(5px);
+}
+
+.manager-role-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.manager-role-color {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.manager-role-details h4 {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.manager-role-details p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.manager-role-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .action-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .user-dashboard .user-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .user-actions {
+        justify-content: center;
+    }
+    
+    .color-picker-advanced {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .preset-colors-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .manager-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        max-width: none;
+    }
+    
+    .manager-role-item {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .manager-role-actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .preset-colors-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }

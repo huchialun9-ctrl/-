@@ -1,31 +1,39 @@
-// 全域狀態
 let currentUser = null;
+let currentGuild = null;
 let isOwner = false;
 
 // DOM 元素
 const loginSection = document.getElementById('loginSection');
 const userSection = document.getElementById('userSection');
-const benefitsSection = document.getElementById('benefitsSection');
 const roleSection = document.getElementById('roleSection');
 const artworkUpload = document.getElementById('artworkUpload');
-const loading = document.getElementById('loading');
+const notification = document.getElementById('notification');
 
-// 初始化
 document.addEventListener('DOMContentLoaded', () => {
-    setupListeners();
+    setupEventListeners();
     checkLoginStatus();
 });
 
-function setupListeners() {
+function setupEventListeners() {
     document.getElementById('discordLoginBtn').onclick = () => window.location.href = '/auth/discord';
     document.getElementById('logoutBtn').onclick = () => window.location.href = '/auth/logout';
+    
+    // 手動登入切換
     document.getElementById('manualLoginToggle').onclick = () => {
         const form = document.getElementById('loginForm');
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     };
-    document.getElementById('closeNotification').onclick = () => {
-        document.getElementById('notification').style.display = 'none';
-    };
+
+    // 顏色選擇器同步
+    const colorPicker = document.getElementById('roleColor');
+    const colorHex = document.getElementById('colorHex');
+    if (colorPicker && colorHex) {
+        colorPicker.oninput = function() { colorHex.value = this.value.toUpperCase(); };
+        colorHex.oninput = function() { if (/^#[0-9A-F]{6}$/i.test(this.value)) colorPicker.value = this.value; };
+    }
+
+    // 關閉通知
+    document.getElementById('closeNotification').onclick = () => notification.style.display = 'none';
 }
 
 async function checkLoginStatus() {
@@ -39,45 +47,30 @@ async function checkLoginStatus() {
     }
 }
 
-async function handleLoginSuccess(user) {
+function handleLoginSuccess(user) {
     currentUser = user;
     isOwner = user.isOwner;
 
-    // UI 切換
+    // UI 切換：藏起登入區，打開儀表板
     loginSection.style.display = 'none';
     userSection.style.display = 'block';
-    benefitsSection.style.display = 'block';
     roleSection.style.display = 'block';
-    
+    if (document.getElementById('benefitsSection')) document.getElementById('benefitsSection').style.display = 'block';
+
     document.getElementById('userName').innerText = user.username;
     document.getElementById('userStatus').innerText = "🎨 歡迎使用自定義中心";
     
-    if (user.id && user.avatar) {
+    if (user.avatar) {
         document.querySelector('.user-avatar').innerHTML = 
             `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" style="width:100%; border-radius:50%">`;
     }
 
-    if (isOwner) artworkUpload.style.display = 'block';
-    
-    loadBenefits();
+    if (isOwner && artworkUpload) artworkUpload.style.display = 'block';
 }
 
-async function loadBenefits() {
-    const res = await fetch('/api/benefits');
-    const benefits = await res.json();
-    const grid = document.getElementById('benefitsGrid');
-    grid.innerHTML = benefits.map(b => `
-        <div class="benefit-card">
-            <div class="benefit-icon">${b.icon}</div>
-            <h3>${b.name}</h3>
-            <p>${b.description}</p>
-        </div>
-    `).join('');
-}
-
-function showNotification(msg) {
-    const n = document.getElementById('notification');
+function showNotification(msg, type = 'success') {
     document.getElementById('notificationText').innerText = msg;
-    n.style.display = 'flex';
-    setTimeout(() => n.style.display = 'none', 3000);
+    notification.className = `notification ${type}`;
+    notification.style.display = 'flex';
+    setTimeout(() => notification.style.display = 'none', 3000);
 }

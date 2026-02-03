@@ -6,19 +6,23 @@ require('dotenv').config();
 
 const app = express();
 
-// 靜態檔案支援
+// 1. 靜態檔案支援：確保伺服器優先讀取 public 資料夾 (解決排版與顯示問題)
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Session 設定
+// 2. Session 設定
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'yuka-secure-key-2026',
+    secret: process.env.SESSION_SECRET || 'fish-cafe-secure-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 }
+    cookie: { 
+        secure: true, 
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000 
+    }
 }));
 
-// API：獲取用戶資訊 (解決前端 JSON 解析錯誤)
+// 3. API：獲取用戶資料 (讓 script.js 知道顯示誰的儀表板)
 app.get('/api/user', (req, res) => {
     if (req.session && req.session.user) {
         res.json({
@@ -30,20 +34,19 @@ app.get('/api/user', (req, res) => {
     }
 });
 
-// API：提供模擬功能列表
-app.get('/api/benefits', (req, res) => {
-    res.json([
-        { id: 'custom_role', name: '身份組自定義', icon: '🎨', description: '自選顏色與名稱' },
-        { id: 'art_wall', name: '藝術牆展示', icon: '🖼️', description: '展示您的精彩瞬間' }
-    ]);
+// 4. 首頁路由：明確指向你的 index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Discord 登入與 Callback
+// 5. Discord 登入流程
 app.get('/auth/discord', (req, res) => {
-    const url = `https://discord.com/api/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.DISCORD_REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
+    const { DISCORD_CLIENT_ID, DISCORD_REDIRECT_URI } = process.env;
+    const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
     res.redirect(url);
 });
 
+// 6. Callback 處理：修正重定向，直接帶你回漂亮的儀表板
 app.get('/auth/discord/callback', async (req, res) => {
     const { code } = req.query;
     try {
@@ -59,8 +62,17 @@ app.get('/auth/discord/callback', async (req, res) => {
             headers: { Authorization: `Bearer ${tokenRes.data.access_token}` }
         });
 
-        req.session.user = userRes.data;
-        res.redirect('/?login=success');
+        // 取得用戶加入的伺服器列表
+        const guildsRes = await axios.get('https://discord.com/api/users/@me/guilds', {
+            headers: { Authorization: `Bearer ${tokenRes.data.access_token}` }
+        });
+
+        req.session.user = {
+            ...userRes.data,
+            guilds: guildsRes.data
+        };
+        
+        res.redirect('/?login=success'); 
     } catch (err) {
         res.redirect('/?error=oauth_failed');
     }
